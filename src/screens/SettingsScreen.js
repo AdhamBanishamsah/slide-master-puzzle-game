@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
   backButtonContainer: {
     marginTop: 20,
     alignItems: 'center',
+    
   },
 });
 
