@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Image } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Image, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useGame } from '../context/GameContext';
 import { getTheme } from '../theme/theme';
 import GameButton from '../components/GameButton';
 import audioService from '../services/AudioService';
+
 
 const MainMenuScreen = () => {
   const navigation = useNavigation();
@@ -59,7 +60,9 @@ const MainMenuScreen = () => {
           </Text>
         </View>
 
+
         {/* Main Buttons */}
+        
         <View style={styles.buttonContainer}>
           <GameButton
             title="Play"

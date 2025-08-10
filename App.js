@@ -1,9 +1,11 @@
+import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LogBox } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import MainMenuScreen from './src/screens/MainMenuScreen';
 import GameScreen from './src/screens/GameScreen';
@@ -54,11 +56,13 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <SafeAreaProvider>
-      <GameProvider>
-        <AppContent />
-      </GameProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <GameProvider>
+          <AppContent />
+        </GameProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 };
 

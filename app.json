@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Number Puzzle Game",
-    "slug": "number-puzzle-game",
+    "name": "Slide Master",
+    "slug": "slide-master",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
