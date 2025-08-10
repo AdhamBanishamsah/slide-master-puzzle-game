@@ -1,7 +1,7 @@
 export const lightTheme = {
-  // Background colors
-  background: '#ffffff',
-  surface: '#f8fafc',
+  // Background colors - Inspired by the light blue sky with snowflakes
+  background: '#e8f4fd',
+  surface: '#ffffff',
   card: '#ffffff',
   
   // Text colors
@@ -9,97 +9,109 @@ export const lightTheme = {
   textSecondary: '#64748b',
   textMuted: '#94a3b8',
   
-  // Accent colors
-  primary: '#059669',
-  primaryLight: '#10b981',
-  primaryDark: '#047857',
+  // Accent colors - Inspired by the vibrant UI elements
+  primary: '#3b82f6', // Beautiful blue
+  primaryLight: '#60a5fa',
+  primaryDark: '#2563eb',
   
   // Border colors
   border: '#e2e8f0',
   borderLight: '#f1f5f9',
   
-  // Status colors
-  success: '#10b981',
-  warning: '#f59e0b',
-  error: '#ef4444',
+  // Status colors - Inspired by the colorful game elements
+  success: '#10b981', // Green
+  warning: '#f59e0b', // Orange
+  error: '#ef4444',   // Red
   
-  // Shadow
-  shadow: 'rgba(0, 0, 0, 0.1)',
+  // Shadow - Softer shadows for modern look
+  shadow: 'rgba(59, 130, 246, 0.1)',
   
-  // Puzzle tile colors
-  tileBackground: '#f8fafc',
+  // Puzzle tile colors - Inspired by the clean game tiles
+  tileBackground: '#ffffff',
   tileBorder: '#e2e8f0',
   tileActive: '#dbeafe',
   tileActiveBorder: '#3b82f6',
   tileText: '#1e293b',
   
-  // Button colors
-  buttonPrimary: '#059669',
+  // Button colors - Inspired by the rounded buttons
+  buttonPrimary: '#3b82f6',
   buttonPrimaryText: '#ffffff',
   buttonSecondary: '#f8fafc',
-  buttonSecondaryText: '#059669',
-  buttonSecondaryBorder: '#059669',
+  buttonSecondaryText: '#3b82f6',
+  buttonSecondaryBorder: '#3b82f6',
   
   // Toggle colors
-  toggleActive: '#059669',
+  toggleActive: '#3b82f6',
   toggleInactive: '#cbd5e1',
   toggleThumb: '#ffffff',
   
   // Stats colors
   statLabel: '#64748b',
   statValue: '#1e293b',
+  
+  // Additional colors for enhanced UI
+  gradientStart: '#3b82f6',
+  gradientEnd: '#1d4ed8',
+  accent: '#f59e0b', // Orange accent
+  highlight: '#fef3c7', // Light yellow highlight
 };
 
 export const darkTheme = {
-  // Background colors
-  background: '#0f1419',
-  surface: '#1f2937',
-  card: '#374151',
+  // Background colors - Inspired by the dark game interface
+  background: '#0f172a',
+  surface: '#1e293b',
+  card: '#334155',
   
   // Text colors
   text: '#ffffff',
   textSecondary: '#d1d5db',
   textMuted: '#9ca3af',
   
-  // Accent colors
-  primary: '#4ade80',
-  primaryLight: '#86efac',
-  primaryDark: '#22c55e',
+  // Accent colors - Inspired by the vibrant UI elements
+  primary: '#60a5fa', // Bright blue
+  primaryLight: '#93c5fd',
+  primaryDark: '#3b82f6',
   
   // Border colors
-  border: '#374151',
-  borderLight: '#4b5563',
+  border: '#334155',
+  borderLight: '#475569',
   
-  // Status colors
-  success: '#4ade80',
-  warning: '#fbbf24',
-  error: '#f87171',
+  // Status colors - Inspired by the colorful game elements
+  success: '#4ade80', // Green
+  warning: '#fbbf24', // Orange
+  error: '#f87171',   // Red
   
-  // Shadow
-  shadow: 'rgba(0, 0, 0, 0.3)',
+  // Shadow - Enhanced shadows for depth
+  shadow: 'rgba(0, 0, 0, 0.4)',
   
-  // Puzzle tile colors
-  tileBackground: '#1f2937',
-  tileBorder: '#374151',
+  // Puzzle tile colors - Inspired by the clean game tiles
+  tileBackground: '#1e293b',
+  tileBorder: '#334155',
   tileActive: '#2a2f38',
-  tileActiveBorder: '#4ade80',
+  tileActiveBorder: '#60a5fa',
   tileText: '#ffffff',
   
-  // Button colors
-  buttonPrimary: '#4ade80',
-  buttonPrimaryText: '#0f1419',
+  // Button colors - Inspired by the rounded buttons
+  buttonPrimary: '#60a5fa',
+  buttonPrimaryText: '#0f172a',
   buttonSecondary: 'transparent',
-  buttonSecondaryText: '#4ade80',
-  buttonSecondaryBorder: '#4ade80',
+  buttonSecondaryText: '#60a5fa',
+  buttonSecondaryBorder: '#60a5fa',
   
   // Toggle colors
-  toggleActive: '#4ade80',
-  toggleInactive: '#374151',
+  toggleActive: '#60a5fa',
+  toggleInactive: '#334155',
   toggleThumb: '#ffffff',
   
   // Stats colors
   statLabel: '#9ca3af',
   statValue: '#ffffff',
+  
+  // Additional colors for enhanced UI
+  gradientStart: '#60a5fa',
+  gradientEnd: '#3b82f6',
+  accent: '#fbbf24', // Orange accent
+  highlight: '#1e3a8a', // Dark blue highlight
 };
 
 export const getTheme = (isDark) => {

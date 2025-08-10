@@ -7,7 +7,7 @@ import GameButton from '../components/GameButton';
 
 const HighScoreScreen = () => {
   const navigation = useNavigation();
-  const { theme, bestTime, bestMoves, formatTime } = useGame();
+  const { theme, bestTime, bestMoves, highScores, formatTime } = useGame();
   const themeColors = getTheme(theme === 'dark');
 
   const handleBackToMenu = () => {
@@ -38,43 +38,70 @@ const HighScoreScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <Text style={[styles.title, { color: themeColors.text }]}>High Scores</Text>
-          <Text style={[styles.subtitle, { color: themeColors.textSecondary }]}>
-            Your best achievements
-          </Text>
         </View>
 
         {/* Score Cards */}
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-          <View style={styles.cardsContainer}>
-            {renderScoreCard(
-              'Best Time',
-              bestTime ? formatTime(bestTime) : null,
-              'Fastest completion',
-              '⏱️'
-            )}
-            
-            {renderScoreCard(
-              'Best Moves',
-              bestMoves ? bestMoves.toString() : null,
-              'Fewest moves used',
-              '🎯'
-            )}
-            
-            {renderScoreCard(
-              'Games Played',
-              'Coming Soon',
-              'Total games completed',
-              '🎮'
-            )}
-            
-            {renderScoreCard(
-              'Win Rate',
-              'Coming Soon',
-              'Success percentage',
-              '📊'
-            )}
+        <View style={styles.cardsContainer}>
+          {/* Easy Difficulty */}
+          <View style={styles.difficultySection}>
+            <Text style={[styles.difficultyTitle, { color: themeColors.primary }]}>Easy (3×3)</Text>
+            <View style={styles.difficultyScores}>
+              {renderScoreCard(
+                'Best Time',
+                highScores.easy.bestTime ? formatTime(highScores.easy.bestTime) : null,
+                'Fastest',
+                '⏱️'
+              )}
+              
+              {renderScoreCard(
+                'Best Moves',
+                highScores.easy.bestMoves ? highScores.easy.bestMoves.toString() : null,
+                'Fewest',
+                '🎯'
+              )}
+            </View>
           </View>
-        </ScrollView>
+
+          {/* Normal Difficulty */}
+          <View style={styles.difficultySection}>
+            <Text style={[styles.difficultyTitle, { color: themeColors.primary }]}>Normal (4×4)</Text>
+            <View style={styles.difficultyScores}>
+              {renderScoreCard(
+                'Best Time',
+                highScores.normal.bestTime ? formatTime(highScores.normal.bestTime) : null,
+                'Fastest',
+                '⏱️'
+              )}
+              
+              {renderScoreCard(
+                'Best Moves',
+                highScores.normal.bestMoves ? highScores.normal.bestMoves.toString() : null,
+                'Fewest',
+                '🎯'
+              )}
+            </View>
+          </View>
+
+          {/* Hard Difficulty */}
+          <View style={styles.difficultySection}>
+            <Text style={[styles.difficultyTitle, { color: themeColors.primary }]}>Hard (5×5)</Text>
+            <View style={styles.difficultyScores}>
+              {renderScoreCard(
+                'Best Time',
+                highScores.hard.bestTime ? formatTime(highScores.hard.bestTime) : null,
+                'Fastest',
+                '⏱️'
+              )}
+              
+              {renderScoreCard(
+                'Best Moves',
+                highScores.hard.bestMoves ? highScores.hard.bestMoves.toString() : null,
+                'Fewest',
+                '🎯'
+              )}
+            </View>
+          </View>
+        </View>
 
         {/* Action Buttons */}
         <View style={styles.buttonContainer}>
@@ -107,71 +134,79 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
   header: {
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 40,
+    marginTop: 10,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  scrollView: {
-    flex: 1,
   },
   cardsContainer: {
-    paddingBottom: 20,
+    flex: 1,
+    justifyContent: 'space-around',
+  },
+  difficultySection: {
+    marginBottom: 8,
+  },
+  difficultyTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  difficultyScores: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   scoreCard: {
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1,
-    padding: 24,
-    marginBottom: 16,
+    padding: 12,
+    marginBottom: 0,
+    marginHorizontal: 6,
+    flex: 1,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
+    shadowRadius: 6,
     elevation: 3,
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   cardIcon: {
-    fontSize: 24,
-    marginRight: 12,
+    fontSize: 18,
+    marginRight: 8,
   },
   cardTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   cardContent: {
     alignItems: 'center',
   },
   cardValue: {
-    fontSize: 36,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   cardSubtitle: {
-    fontSize: 14,
+    fontSize: 12,
     textAlign: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
+    marginTop: 16,
   },
   buttonSpacer: {
     width: 16,

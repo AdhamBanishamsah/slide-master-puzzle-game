@@ -3,7 +3,7 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useGame } from '../context/GameContext';
 import { getTheme } from '../theme/theme';
 
-const PuzzleTile = ({ value, index, onPress, isActive }) => {
+const PuzzleTile = ({ value, index, onPress, isActive, tileSize = 80 }) => {
   const { theme } = useGame();
   const themeColors = getTheme(theme === 'dark');
 
@@ -27,6 +27,8 @@ const PuzzleTile = ({ value, index, onPress, isActive }) => {
         style={[
           styles.tile,
           {
+            width: tileSize,
+            height: tileSize,
             backgroundColor: 'transparent',
             borderWidth: 2,
             borderColor: themeColors.tileBorder,
@@ -48,6 +50,8 @@ const PuzzleTile = ({ value, index, onPress, isActive }) => {
       style={[
         styles.tile,
         {
+          width: tileSize,
+          height: tileSize,
           backgroundColor: isActive ? themeColors.tileActive : themeColors.tileBackground,
           borderWidth: isActive ? 2 : 1,
           borderColor: isActive ? themeColors.tileActiveBorder : themeColors.tileBorder,
@@ -60,31 +64,30 @@ const PuzzleTile = ({ value, index, onPress, isActive }) => {
       accessibilityRole="button"
       accessibilityHint={`Tap to move tile ${value}`}
     >
-      <Text style={[styles.tileText, { color: themeColors.tileText }]}>{value}</Text>
+      <Text style={[styles.tileText, { color: themeColors.tileText, fontSize: Math.max(16, tileSize * 0.3) }]}>{value}</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   tile: {
-    width: 80,
-    height: 80,
-    borderRadius: 12,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 4,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 6,
+    borderWidth: 2,
   },
   tileText: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
 });
 

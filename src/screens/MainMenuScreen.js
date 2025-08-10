@@ -36,6 +36,10 @@ const MainMenuScreen = () => {
     navigation.navigate('HighScores');
   };
 
+  const handleAbout = () => {
+    navigation.navigate('About');
+  };
+
 
 
   return (
@@ -86,16 +90,27 @@ const MainMenuScreen = () => {
             accessibilityHint="Tap to see your best times and moves"
             style={styles.button}
           />
-        </View>
-
-        {/* Settings Link */}
-        <View style={styles.settingsContainer}>
+          
+          <View style={styles.buttonSpacer} />
+          
+          <GameButton
+            title="About"
+            onPress={handleAbout}
+            variant="secondary"
+            accessibilityLabel="View about page"
+            accessibilityHint="Tap to see developer information"
+            style={styles.button}
+          />
+          
+          <View style={styles.buttonSpacer} />
+          
           <GameButton
             title="Settings"
             onPress={handleSettings}
             variant="secondary"
             accessibilityLabel="Open settings"
             accessibilityHint="Tap to open game settings"
+            style={styles.button}
           />
         </View>
       </View>
@@ -116,23 +131,35 @@ const styles = StyleSheet.create({
   titleContainer: {
     alignItems: 'center',
     marginTop: 60,
+    paddingVertical: 20,
   },
   logo: {
     width: 120,
     height: 120,
-    marginBottom: 20,
-    borderRadius: 20,
+    marginBottom: 24,
+    borderRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
   },
   title: {
-    fontSize: 36,
-    fontWeight: 'bold',
+    fontSize: 40,
+    fontWeight: '800',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
+    letterSpacing: 1,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
     opacity: 0.8,
+    fontWeight: '500',
+    letterSpacing: 0.5,
   },
   buttonContainer: {
     flex: 1,
@@ -146,10 +173,6 @@ const styles = StyleSheet.create({
   },
   buttonSpacer: {
     height: 16,
-  },
-  settingsContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
   },
 });
 

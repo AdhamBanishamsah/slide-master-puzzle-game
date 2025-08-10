@@ -205,12 +205,10 @@ class AudioService {
   }
 
   setMusicEnabled(enabled) {
-    console.log('Setting music enabled:', enabled);
     this.isMusicEnabled = enabled;
     
     // Stop background music if disabled
     if (!enabled && this.backgroundMusic) {
-      console.log('Stopping background music - music disabled');
       this.stopBackgroundMusic();
     }
   }
@@ -261,14 +259,7 @@ class AudioService {
   }
 
   async startBackgroundMusic() {
-    console.log('Attempting to start background music:', {
-      isMusicEnabled: this.isMusicEnabled,
-      musicVolume: this.musicVolume,
-      hasBackgroundMusic: !!this.backgroundMusic
-    });
-    
     if (!this.isMusicEnabled || this.musicVolume === 0) {
-      console.log('Music not started - disabled or volume 0');
       return;
     }
     
@@ -282,7 +273,6 @@ class AudioService {
         { shouldPlay: true, isLooping: true, volume: this.musicVolume }
       );
       this.backgroundMusic = sound;
-      console.log('Background music started successfully');
     } catch (error) {
       console.log('Error starting background music:', error);
     }
@@ -290,7 +280,6 @@ class AudioService {
 
   async stopBackgroundMusic() {
     if (!this.backgroundMusic) {
-      console.log('No background music to stop');
       return;
     }
     
@@ -303,7 +292,7 @@ class AudioService {
         try {
           await this.backgroundMusic.stopAsync();
         } catch (stopError) {
-          console.log('Error stopping music (continuing to unload):', stopError);
+          // Continue to unload even if stop fails
         }
       }
       
@@ -311,13 +300,11 @@ class AudioService {
       try {
         await this.backgroundMusic.unloadAsync();
       } catch (unloadError) {
-        console.log('Error unloading music:', unloadError);
+        // Continue even if unload fails
       }
       
       this.backgroundMusic = null;
-      console.log('Background music stopped successfully');
     } catch (error) {
-      console.log('Error stopping background music:', error);
       // Even if there's an error, clear the reference
       this.backgroundMusic = null;
     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useGame } from '../context/GameContext';
 import { getTheme } from '../theme/theme';
@@ -9,7 +9,7 @@ import WinningAnimation from '../components/WinningAnimation';
 
 const GameScreen = () => {
   const navigation = useNavigation();
-  const { theme, puzzle, time, moves, isGameActive, isWon, moveTile, shufflePuzzle, resetGame, formatTime } = useGame();
+  const { theme, puzzle, time, moves, isGameActive, isWon, moveTile, shufflePuzzle, resetGame, formatTime, getGridSize } = useGame();
   const themeColors = getTheme(theme === 'dark');
   const [showWinningAnimation, setShowWinningAnimation] = useState(false);
 
@@ -40,8 +40,14 @@ const GameScreen = () => {
   };
 
   const renderPuzzleGrid = () => {
+    const gridSize = getGridSize();
+    // Calculate tile size to fit screen while maintaining square aspect ratio
+    const screenWidth = Dimensions.get('window').width - 40; // Screen width minus padding
+    const tileSize = Math.floor((screenWidth - (gridSize + 1) * 8) / gridSize); // 8px margins
+    const containerWidth = gridSize * tileSize + (gridSize + 1) * 8;
+    
     return (
-      <View style={styles.puzzleContainer}>
+      <View style={[styles.puzzleContainer, { width: containerWidth }]}>
         {puzzle.map((value, index) => (
           <PuzzleTile
             key={index}
@@ -49,6 +55,7 @@ const GameScreen = () => {
             index={index}
             onPress={moveTile}
             isActive={isGameActive}
+            tileSize={tileSize}
           />
         ))}
       </View>
@@ -151,8 +158,8 @@ const styles = StyleSheet.create({
   puzzleContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: 264, // 3 tiles * 80px + 2 margins * 4px
     justifyContent: 'center',
+    alignSelf: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',

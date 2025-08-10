@@ -4,6 +4,33 @@ import audioService from '../services/AudioService';
 
 const GameContext = createContext();
 
+// Helper functions for different difficulty levels
+const getInitialPuzzle = (difficulty) => {
+  switch (difficulty) {
+    case 'easy':
+      return [1, 2, 3, 4, 5, 6, 7, 8, 0]; // 3x3
+    case 'normal':
+      return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]; // 4x4
+    case 'hard':
+      return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 0]; // 5x5
+    default:
+      return [1, 2, 3, 4, 5, 6, 7, 8, 0];
+  }
+};
+
+const getGridSize = (difficulty) => {
+  switch (difficulty) {
+    case 'easy': return 3;
+    case 'normal': return 4;
+    case 'hard': return 5;
+    default: return 3;
+  }
+};
+
+const getSolvedPuzzle = (difficulty) => {
+  return getInitialPuzzle(difficulty);
+};
+
 const initialState = {
   // Game state
   puzzle: [1, 2, 3, 4, 5, 6, 7, 8, 0], // 0 represents empty tile
@@ -14,12 +41,20 @@ const initialState = {
   bestMoves: null,
   isWon: false,
   
+  // High scores for each difficulty
+  highScores: {
+    easy: { bestTime: null, bestMoves: null },
+    normal: { bestTime: null, bestMoves: null },
+    hard: { bestTime: null, bestMoves: null },
+  },
+  
   // Settings
-  music: true,
+  music: false,
   soundEffects: true,
   haptics: true,
   musicVolume: 0.5, // Volume from 0 to 1
   theme: 'dark', // 'light' or 'dark'
+  difficulty: 'easy', // 'easy' (3x3), 'normal' (4x4), 'hard' (5x5)
   
   // Audio
   backgroundMusic: null,
@@ -41,6 +76,28 @@ const gameReducer = (state, action) => {
       return { ...state, bestTime: action.payload };
     case 'SET_BEST_MOVES':
       return { ...state, bestMoves: action.payload };
+    case 'SET_DIFFICULTY_BEST_TIME':
+      return { 
+        ...state, 
+        highScores: {
+          ...state.highScores,
+          [action.payload.difficulty]: {
+            ...state.highScores[action.payload.difficulty],
+            bestTime: action.payload.time
+          }
+        }
+      };
+    case 'SET_DIFFICULTY_BEST_MOVES':
+      return { 
+        ...state, 
+        highScores: {
+          ...state.highScores,
+          [action.payload.difficulty]: {
+            ...state.highScores[action.payload.difficulty],
+            bestMoves: action.payload.moves
+          }
+        }
+      };
     case 'SET_WON':
       return { ...state, isWon: action.payload };
     case 'TOGGLE_MUSIC':
@@ -53,10 +110,12 @@ const gameReducer = (state, action) => {
       return { ...state, musicVolume: action.payload };
     case 'SET_THEME':
       return { ...state, theme: action.payload };
+    case 'SET_DIFFICULTY':
+      return { ...state, difficulty: action.payload };
     case 'RESET_GAME':
       return { 
         ...state, 
-        puzzle: [1, 2, 3, 4, 5, 6, 7, 8, 0],
+        puzzle: getInitialPuzzle(state.difficulty),
         isGameActive: false,
         time: 0,
         moves: 0,
@@ -97,6 +156,23 @@ export const GameProvider = ({ children }) => {
               dispatch({ type: 'SET_BEST_TIME', payload: parsedData[key] });
             } else if (key === 'bestMoves') {
               dispatch({ type: 'SET_BEST_MOVES', payload: parsedData[key] });
+            } else if (key === 'highScores') {
+              // Load high scores for each difficulty
+              Object.keys(parsedData[key]).forEach(difficulty => {
+                const scores = parsedData[key][difficulty];
+                if (scores.bestTime) {
+                  dispatch({ 
+                    type: 'SET_DIFFICULTY_BEST_TIME', 
+                    payload: { difficulty, time: scores.bestTime }
+                  });
+                }
+                if (scores.bestMoves) {
+                  dispatch({ 
+                    type: 'SET_DIFFICULTY_BEST_MOVES', 
+                    payload: { difficulty, moves: scores.bestMoves }
+                  });
+                }
+              });
             } else if (key === 'music') {
               if (!parsedData[key]) dispatch({ type: 'TOGGLE_MUSIC' });
             } else if (key === 'soundEffects') {
@@ -107,6 +183,8 @@ export const GameProvider = ({ children }) => {
               dispatch({ type: 'SET_THEME', payload: parsedData[key] });
             } else if (key === 'musicVolume') {
               dispatch({ type: 'SET_MUSIC_VOLUME', payload: parsedData[key] });
+            } else if (key === 'difficulty') {
+              dispatch({ type: 'SET_DIFFICULTY', payload: parsedData[key] });
             }
           });
         }
@@ -124,11 +202,13 @@ export const GameProvider = ({ children }) => {
         const dataToSave = {
           bestTime: state.bestTime,
           bestMoves: state.bestMoves,
+          highScores: state.highScores,
           music: state.music,
           soundEffects: state.soundEffects,
           haptics: state.haptics,
           theme: state.theme,
           musicVolume: state.musicVolume,
+          difficulty: state.difficulty,
         };
         await AsyncStorage.setItem('gameData', JSON.stringify(dataToSave));
       } catch (error) {
@@ -136,18 +216,10 @@ export const GameProvider = ({ children }) => {
       }
     };
     saveData();
-  }, [state.bestTime, state.bestMoves, state.music, state.soundEffects, state.haptics, state.theme, state.musicVolume]);
+  }, [state.bestTime, state.bestMoves, state.highScores, state.music, state.soundEffects, state.haptics, state.theme, state.musicVolume, state.difficulty]);
 
   // Update audio service settings when they change
   useEffect(() => {
-    console.log('Audio settings changed:', {
-      music: state.music,
-      soundEffects: state.soundEffects,
-      haptics: state.haptics,
-      musicVolume: state.musicVolume,
-      hasBackgroundMusic: !!audioService.backgroundMusic
-    });
-    
     audioService.setMusicEnabled(state.music);
     audioService.setSoundEnabled(state.soundEffects);
     audioService.setHapticsEnabled(state.haptics);
@@ -156,12 +228,10 @@ export const GameProvider = ({ children }) => {
     if (state.music && state.musicVolume > 0) {
       // Start background music if enabled and volume > 0
       if (!audioService.backgroundMusic) {
-        console.log('Auto-starting background music');
         audioService.startBackgroundMusic();
       }
     } else {
       // Stop background music if disabled or volume is 0
-      console.log('Stopping background music - disabled or volume 0');
       audioService.stopBackgroundMusic();
     }
   }, [state.music, state.soundEffects, state.haptics, state.musicVolume]);
@@ -181,9 +251,9 @@ export const GameProvider = ({ children }) => {
 
   // Check if puzzle is solved
   useEffect(() => {
+    const solvedPuzzle = getSolvedPuzzle(state.difficulty);
     const isSolved = state.puzzle.every((tile, index) => {
-      if (index === 8) return tile === 0; // Last tile should be empty
-      return tile === index + 1;
+      return tile === solvedPuzzle[index];
     });
 
     if (isSolved && state.isGameActive && !state.isWon) {
@@ -194,18 +264,25 @@ export const GameProvider = ({ children }) => {
       audioService.playWinSound();
       audioService.playHapticFeedback('success');
       
-      // Update best times
-      if (!state.bestTime || state.time < state.bestTime) {
-        dispatch({ type: 'SET_BEST_TIME', payload: state.time });
+      // Update best times for current difficulty
+      const currentDifficultyScores = state.highScores[state.difficulty];
+      if (!currentDifficultyScores.bestTime || state.time < currentDifficultyScores.bestTime) {
+        dispatch({ 
+          type: 'SET_DIFFICULTY_BEST_TIME', 
+          payload: { difficulty: state.difficulty, time: state.time }
+        });
       }
-      if (!state.bestMoves || state.moves < state.bestMoves) {
-        dispatch({ type: 'SET_BEST_MOVES', payload: state.moves });
+      if (!currentDifficultyScores.bestMoves || state.moves < currentDifficultyScores.bestMoves) {
+        dispatch({ 
+          type: 'SET_DIFFICULTY_BEST_MOVES', 
+          payload: { difficulty: state.difficulty, moves: state.moves }
+        });
       }
     }
   }, [state.puzzle, state.isGameActive, state.time, state.moves, state.bestTime, state.bestMoves, state.isWon]);
 
   const shufflePuzzle = () => {
-    const shuffled = [...state.puzzle];
+    const shuffled = [...getInitialPuzzle(state.difficulty)];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -216,12 +293,13 @@ export const GameProvider = ({ children }) => {
   const moveTile = (index) => {
     if (!state.isGameActive || state.isWon) return;
 
+    const gridSize = getGridSize(state.difficulty);
     const emptyIndex = state.puzzle.indexOf(0);
     const canMove = (
-      (index === emptyIndex - 1 && index % 3 !== 2) || // Right
-      (index === emptyIndex + 1 && index % 3 !== 0) || // Left
-      (index === emptyIndex - 3) || // Down
-      (index === emptyIndex + 3) // Up
+      (index === emptyIndex - 1 && index % gridSize !== gridSize - 1) || // Right
+      (index === emptyIndex + 1 && index % gridSize !== 0) || // Left
+      (index === emptyIndex - gridSize) || // Down
+      (index === emptyIndex + gridSize) // Up
     );
 
     if (canMove) {
@@ -242,20 +320,15 @@ export const GameProvider = ({ children }) => {
 
   const toggleMusic = () => {
     const newMusicState = !state.music;
-    console.log('Toggling music:', { from: state.music, to: newMusicState, volume: state.musicVolume });
     dispatch({ type: 'TOGGLE_MUSIC' });
     
     if (newMusicState) {
       // Music enabled - start background music if volume > 0
       if (state.musicVolume > 0) {
-        console.log('Starting background music - enabled and volume > 0');
         audioService.startBackgroundMusic();
-      } else {
-        console.log('Music enabled but volume is 0');
       }
     } else {
       // Music disabled - stop background music immediately
-      console.log('Disabling music - stopping background music');
       audioService.setMusicEnabled(false);
       audioService.stopBackgroundMusic();
     }
@@ -292,6 +365,23 @@ export const GameProvider = ({ children }) => {
   const resetBestTime = () => {
     dispatch({ type: 'SET_BEST_TIME', payload: null });
     dispatch({ type: 'SET_BEST_MOVES', payload: null });
+    // Reset high scores for all difficulties
+    ['easy', 'normal', 'hard'].forEach(difficulty => {
+      dispatch({ 
+        type: 'SET_DIFFICULTY_BEST_TIME', 
+        payload: { difficulty, time: null }
+      });
+      dispatch({ 
+        type: 'SET_DIFFICULTY_BEST_MOVES', 
+        payload: { difficulty, moves: null }
+      });
+    });
+  };
+
+  const setDifficulty = (difficulty) => {
+    dispatch({ type: 'SET_DIFFICULTY', payload: difficulty });
+    // Reset the game when difficulty changes
+    dispatch({ type: 'RESET_GAME' });
   };
 
   const formatTime = (seconds) => {
@@ -311,7 +401,9 @@ export const GameProvider = ({ children }) => {
     toggleTheme,
     setMusicVolume,
     resetBestTime,
+    setDifficulty,
     formatTime,
+    getGridSize: () => getGridSize(state.difficulty),
   };
 
   return (

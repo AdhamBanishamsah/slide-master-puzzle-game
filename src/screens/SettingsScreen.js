@@ -15,11 +15,13 @@ const SettingsScreen = () => {
     soundEffects,
     haptics,
     musicVolume,
+    difficulty,
     toggleMusic,
     toggleSoundEffects,
     toggleHaptics,
     toggleTheme,
     setMusicVolume,
+    setDifficulty,
     resetBestTime
   } = useGame();
   
@@ -120,6 +122,33 @@ const SettingsScreen = () => {
               <ToggleSwitch value={theme === 'dark'} onToggle={toggleTheme} />
             </View>
           </View>
+
+          {/* Difficulty Selector */}
+          <View style={[styles.settingItem, { borderBottomColor: themeColors.border }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.icon}>🎯</Text>
+              <Text style={[styles.settingLabel, { color: themeColors.text }]}>Difficulty</Text>
+            </View>
+          </View>
+          
+          {/* Difficulty Buttons */}
+          <View style={styles.difficultyButtonsContainer}>
+            {['easy', 'normal', 'hard'].map((level) => {
+              const buttonTitle = level.charAt(0).toUpperCase() + level.slice(1);
+              return (
+                <GameButton
+                  key={level}
+                  title={buttonTitle}
+                  onPress={() => setDifficulty(level)}
+                  variant={difficulty === level ? 'primary' : 'secondary'}
+                  style={styles.difficultyButton}
+                  textStyle={{ fontSize: 13, fontWeight: 'bold', lineHeight: 16 }}
+                  accessibilityLabel={`Set difficulty to ${level}`}
+                  accessibilityHint={`Tap to set game difficulty to ${level}`}
+                />
+              );
+            })}
+          </View>
         </View>
 
         {/* Reset Button */}
@@ -208,6 +237,22 @@ const styles = StyleSheet.create({
   volumeContainer: {
     flex: 1,
     marginLeft: 20,
+  },
+  difficultyButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  difficultyButton: {
+    flex: 1,
+    height: 48,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginHorizontal: 6,
+    borderRadius: 12,
+    minWidth: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   resetContainer: {
     marginTop: 40,

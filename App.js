@@ -10,6 +10,7 @@ import GameScreen from './src/screens/GameScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import HowToPlayScreen from './src/screens/HowToPlayScreen';
 import HighScoreScreen from './src/screens/HighScoreScreen';
+import AboutScreen from './src/screens/AboutScreen';
 import { GameProvider, useGame } from './src/context/GameContext';
 
 // Ignore specific warnings that might cause issues
@@ -45,6 +46,7 @@ const AppContent = () => {
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="HowToPlay" component={HowToPlayScreen} />
         <Stack.Screen name="HighScores" component={HighScoreScreen} />
+        <Stack.Screen name="About" component={AboutScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
